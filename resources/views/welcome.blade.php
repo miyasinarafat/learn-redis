@@ -10,6 +10,9 @@
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
     </head>
     <body>
-       <h1>Hello. You are visitor number #{{ $visits }}.</h1>
+    <h1>Some Video</h1>
+    <p>
+        This video has been downloaded {{ $downloads ?? 'no' }} times.
+    </p>
     </body>
 </html>

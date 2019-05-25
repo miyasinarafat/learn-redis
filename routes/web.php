@@ -1,6 +1,9 @@
 <?php
+
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
+// lesson 2
 Route::get('/videos/{id}', function ($id) {
     $downloads = Redis::get("videos.{$id}.downloads");
 
@@ -13,14 +16,13 @@ Route::get('/videos/{id}/download', function ($id) {
     return back();
 });
 
+// lesson 3
 Route::get('articles/trending', function () {
     $trending = Redis::zrevrange('trending_articles', 0, 2);
 
     $trending = App\Article::hydrate(
         array_map('json_decode', $trending)
     );
-
-    dd($trending);
 
     return $trending;
 });
@@ -33,6 +35,42 @@ Route::get('articles/{article}', function (App\Article $article) {
 
     return $article;
 });
+
+// lesson 4
+Route::get('/', function () {
+    /*$user3Stats = [
+        'favorites' => 1,
+        'watchLaters' => 20,
+        'completions' => 35
+    ];
+    Redis::hmset('user.3.stats', $user3Stats);*/
+
+
+    //$id = session()->get('id');
+    //return Redis::hgetall("user.{$id}.stats");
+
+    Cache::put('foo', 'bar', 10);
+
+
+    return Cache::get('foo');
+});
+
+Route::get('/users/{id}/stats', function ($id) {
+
+    return Redis::hgetall("user.{$id}.stats");
+
+});
+
+Route::get('/users/{id}/favorite-video', function ($id) {
+
+    Redis::hincrby("user.{$id}.stats", 'favorites', 1);
+
+    return redirect('/')->withId($id);
+
+});
+
+
+
 
 
 

@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Redis;
 
 function remember($key, $minuets, $callback) {
     if ($value = Redis::get($key))
-        return json_decode($value);
+        return unserialize($value);
 
-    Redis::setex($key, $minuets, $value = $callback());
+    Redis::setex($key, $minuets, $value = serialize($callback()));
 
     return $value;
 }

@@ -4,17 +4,19 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
 
-Route::get('/', function () {
-
-    if ($value = Redis::get('articles.all'))
+function remember($key, $minuets, $callback) {
+    if ($value = Redis::get($key))
         return json_decode($value);
 
+    Redis::setex($key, $minuets, $value = $callback());
 
-    $articles = \App\Article::all();
+    return $value;
+}
 
-    Redis::setex('articles.all', 10, $articles);
-
-    return $articles;
+Route::get('/', function () {
+    return remember('articles.all', 60 * 60, function () {
+       return \App\Article::all();
+    });
 });
 
 

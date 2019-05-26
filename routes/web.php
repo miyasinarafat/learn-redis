@@ -49,8 +49,9 @@ Route::get('/', function () {
     //$id = session()->get('id');
     //return Redis::hgetall("user.{$id}.stats");
 
-    Cache::put('foo', 'bar', 10);
+    Cache::put('foo', ['name' => 'Laracasts', 'age' => 3], 100);
 
+    //dd(Cache::get('foo'));
 
     return Cache::get('foo');
 });

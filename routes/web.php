@@ -6,13 +6,13 @@ use Illuminate\Support\Facades\Redis;
 
 Route::get('/', function () {
 
-    if (Redis::exists('articles.all'))
-        return json_decode(Redis::get('articles.all'));
+    if ($value = Redis::get('articles.all'))
+        return json_decode($value);
 
 
     $articles = \App\Article::all();
 
-    Redis::set('articles.all', $articles);
+    Redis::setex('articles.all', 10, $articles);
 
     return $articles;
 });

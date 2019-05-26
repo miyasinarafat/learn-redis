@@ -1,8 +1,13 @@
 <?php
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 
-class CacheAbleArticles
+interface Articles {
+    public function all();
+}
+
+class CacheAbleArticles implements Articles
 {
     protected $articles;
 
@@ -21,20 +26,22 @@ class CacheAbleArticles
 }
 
 
-class Articles
+class EloquentArticles implements Articles
 {
     public function all()
     {
-        return \App\Article::all();
+//        return \App\Article::all();
     }
 }
 
+App::bind('Articles', function () {
+    return new CacheAbleArticles(new EloquentArticles);
+});
 
-Route::get('/', function () {
-
-    $articles = new CacheAbleArticles(new Articles);
+Route::get('/', function (Articles $articles) {
 
     return $articles->all();
+
 });
 
 

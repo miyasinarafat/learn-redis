@@ -2,10 +2,18 @@
 
 use Illuminate\Support\Facades\Cache;
 
-Route::get('/', function () {
-    return Cache::remember('articles.all', 60 * 60, function () {
-       return \App\Article::all();
-    });
+class Article {
+    public function all()
+    {
+        return Cache::remember('articles.all', 60 * 60, function () {
+            return \App\Article::all();
+        });
+    }
+}
+
+
+Route::get('/', function (Article $article) {
+    return $article->all();
 });
 
 

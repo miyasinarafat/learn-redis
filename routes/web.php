@@ -2,18 +2,39 @@
 
 use Illuminate\Support\Facades\Cache;
 
-class Article {
+class CacheAbleArticles
+{
+    protected $articles;
+
+    public function __construct($articles)
+    {
+        $this->articles = $articles;
+    }
+
     public function all()
     {
         return Cache::remember('articles.all', 60 * 60, function () {
-            return \App\Article::all();
+            return $this->articles->all();
         });
+
     }
 }
 
 
-Route::get('/', function (Article $article) {
-    return $article->all();
+class Articles
+{
+    public function all()
+    {
+        return \App\Article::all();
+    }
+}
+
+
+Route::get('/', function () {
+
+    $articles = new CacheAbleArticles(new Articles);
+
+    return $articles->all();
 });
 
 
